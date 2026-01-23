@@ -8,6 +8,12 @@ Next.js + Supabase プロジェクト用の Claude Code 設定テンプレート
 
 ### 含まれるもの
 
+- **4つのプラグイン設定**
+  - @claude-plugins-official: 公式プラグイン
+  - claude-mem: メモリ・コンテキスト管理
+  - claude-delegator: GPT専門家への委任
+  - ralph-loop: ループ実行
+
 - **7つのエージェント定義**
   - CTO/統括指揮官: タスク分解・委任・統合
   - FEコーダー: React/Next.js/Tailwind CSS実装

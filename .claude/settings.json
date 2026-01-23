@@ -54,6 +54,12 @@
       }
     ]
   },
+  "enabledPlugins": {
+    "@claude-plugins-official": true,
+    "claude-mem@thedotmack": true,
+    "claude-delegator@jarrodwatts-claude-delegator": true,
+    "ralph-loop@claude-plugins-official": true
+  },
   "agent": "default",
   "project": {
     "name": "{{PROJECT_NAME}}",
