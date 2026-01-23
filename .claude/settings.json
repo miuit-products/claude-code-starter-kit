@@ -3,6 +3,9 @@
     "allow": [
       "Edit",
       "Write",
+      "Read",
+      "Glob",
+      "Grep",
       "Bash(npm run *)",
       "Bash(npm test*)",
       "Bash(npm install*)",
@@ -18,6 +21,8 @@
       "Bash(git pull*)",
       "Bash(git fetch*)",
       "Bash(git stash*)",
+      "Bash(git reset*)",
+      "Bash(git config*)",
       "Bash(gh *)",
       "Bash(ls *)",
       "Bash(cat *)",
@@ -29,7 +34,15 @@
       "Bash(mkdir *)",
       "Bash(rm *)",
       "Bash(cp *)",
-      "Bash(mv *)"
+      "Bash(mv *)",
+      "Bash(echo *)",
+      "Bash(tree *)",
+      "Bash(chmod *)",
+      "Bash(curl *)",
+      "Bash(node *)",
+      "Bash(jq *)",
+      "WebSearch",
+      "mcp__playwright__*"
     ]
   },
   "hooks": {
@@ -95,6 +108,16 @@
         "model": "opus"
       },
       {
+        "name": "fe-lead",
+        "path": ".claude/agents/fe-lead.md",
+        "description": "FE設計方針の策定・UIレビュー（実装しない）"
+      },
+      {
+        "name": "be-lead",
+        "path": ".claude/agents/be-lead.md",
+        "description": "BE設計方針の策定・APIレビュー（実装しない）"
+      },
+      {
         "name": "coder-fe",
         "path": ".claude/agents/coder-fe.md",
         "description": "React/Next.js/Tailwind CSSでのUI実装"
@@ -115,6 +138,11 @@
         "description": "テスト作成（ユニット/API/コンポーネント/E2E）"
       },
       {
+        "name": "e2e-tester",
+        "path": ".claude/agents/e2e-tester.md",
+        "description": "Playwright MCPを使用してE2Eテストを実行・デバッグ"
+      },
+      {
         "name": "code-reviewer",
         "path": ".claude/agents/code-reviewer.md",
         "description": "コードの品質チェック、型チェック、ベストプラクティス検証"
@@ -123,6 +151,16 @@
         "name": "bug-fixer",
         "path": ".claude/agents/bug-fixer.md",
         "description": "バグの調査、原因特定、修正"
+      },
+      {
+        "name": "feature-implementer",
+        "path": ".claude/agents/feature-implementer.md",
+        "description": "新機能の実装、既存機能の拡張（汎用）"
+      },
+      {
+        "name": "database-schema",
+        "path": ".claude/agents/database-schema.md",
+        "description": "DBスキーマ設計、型定義の更新"
       }
     ]
   },
