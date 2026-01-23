@@ -1,0 +1,147 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit",
+      "Write",
+      "Bash(npm run *)",
+      "Bash(npm test*)",
+      "Bash(npm install*)",
+      "Bash(npx *)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git branch*)",
+      "Bash(git checkout*)",
+      "Bash(git push*)",
+      "Bash(git pull*)",
+      "Bash(git fetch*)",
+      "Bash(git stash*)",
+      "Bash(gh *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(wc *)",
+      "Bash(mkdir *)",
+      "Bash(rm *)",
+      "Bash(cp *)",
+      "Bash(mv *)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run lint -- --fix --cache"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run lint -- --fix --cache"
+          }
+        ]
+      }
+    ]
+  },
+  "agent": "default",
+  "project": {
+    "name": "{{PROJECT_NAME}}",
+    "description": "{{PROJECT_DESCRIPTION}}"
+  },
+  "skills": {
+    "directory": ".claude/skills",
+    "available": [
+      {
+        "name": "nextjs-development",
+        "path": ".claude/skills/nextjs-development/SKILL.md",
+        "description": "Next.js 16 App Router、TypeScript、Tailwind CSSを使用した開発"
+      },
+      {
+        "name": "supabase",
+        "path": ".claude/skills/supabase/SKILL.md",
+        "description": "Supabaseを使用したデータベース操作、認証、ストレージ管理"
+      },
+      {
+        "name": "code-simplifier",
+        "path": ".claude/skills/code-simplifier/SKILL.md",
+        "description": "最近変更されたコードを簡略化・リファクタリング"
+      }
+    ]
+  },
+  "subagents": {
+    "directory": ".claude/agents",
+    "available": [
+      {
+        "name": "cto",
+        "path": ".claude/agents/cto.md",
+        "description": "タスク分解・委任・統合（Opus 4.5使用、実装しない）",
+        "model": "opus"
+      },
+      {
+        "name": "coder-fe",
+        "path": ".claude/agents/coder-fe.md",
+        "description": "React/Next.js/Tailwind CSSでのUI実装"
+      },
+      {
+        "name": "coder-be",
+        "path": ".claude/agents/coder-be.md",
+        "description": "API/Supabase実装"
+      },
+      {
+        "name": "coder-db",
+        "path": ".claude/agents/coder-db.md",
+        "description": "DBスキーマ設計、マイグレーション作成、型定義更新"
+      },
+      {
+        "name": "coder-test",
+        "path": ".claude/agents/coder-test.md",
+        "description": "テスト作成（ユニット/API/コンポーネント/E2E）"
+      },
+      {
+        "name": "code-reviewer",
+        "path": ".claude/agents/code-reviewer.md",
+        "description": "コードの品質チェック、型チェック、ベストプラクティス検証"
+      },
+      {
+        "name": "bug-fixer",
+        "path": ".claude/agents/bug-fixer.md",
+        "description": "バグの調査、原因特定、修正"
+      }
+    ]
+  },
+  "testing": {
+    "framework": "vitest",
+    "e2eFramework": "playwright",
+    "commands": {
+      "unit": "npm run test:run",
+      "e2e": "npm run test:e2e",
+      "coverage": "npm run test:coverage"
+    }
+  },
+  "development": {
+    "framework": "Next.js 16",
+    "port": 3000,
+    "devCommand": "npm run dev",
+    "buildCommand": "npm run build"
+  },
+  "importantPaths": {
+    "specs": "docs/spec.md",
+    "types": "types/database.ts"
+  },
+  "rules": [
+    "テストを削除・編集しない（機能欠落の原因になる）",
+    "各機能は実際のユーザー操作でテストする",
+    "バックエンドAPI実装時は型定義との整合性を確認"
+  ]
+}
