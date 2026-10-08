@@ -23,10 +23,11 @@ Next.js + Supabase プロジェクト用の Claude Code 設定テンプレート
   - コードレビューアー: 品質チェック
   - バグ修正エージェント: バグ調査・修正
 
-- **3つのスキル**
+- **4つのスキル**
   - nextjs-development: Next.js開発パターン
   - supabase: Supabase連携ガイド
   - code-simplifier: コードリファクタリング
+  - chat-preview: チャットの説明をブラウザで開ける図解HTML（Before/After モック・進捗・フロー）にする。個人環境へ配布して使う（下記「スキルの個別インストール」）
 
 - **6つのコマンド**
   - /design-fe: FE設計ガイドライン
@@ -35,6 +36,23 @@ Next.js + Supabase プロジェクト用の Claude Code 設定テンプレート
   - /test-guide: テスト作成ガイド
   - /lint-and-test: Lint + テスト実行
   - /commit-push-pr: コミット→PR支援
+
+## スキルの個別インストール（skillshare）
+
+テンプレートを使わず、スキルだけを自分の環境に入れることもできます。[skillshare](https://github.com/runkids/skillshare) を使うと、Claude Code（`~/.claude/skills`）と Codex（`~/.agents/skills`）の両方に同じスキルが入ります。
+
+```bash
+# 初回のみ
+brew install runkids/tap/skillshare && skillshare init
+
+# chat-preview を入れる（macOS + Google Chrome 前提）
+skillshare install miuit-products/claude-code-starter-kit/.claude/skills/chat-preview
+
+# 更新
+skillshare install miuit-products/claude-code-starter-kit/.claude/skills/chat-preview --update
+```
+
+chat-preview は、チャットの説明（UI変更・進捗・設計・調査結果）をブラウザの「Chat Preview」ハブに図解ページとして積み上げるスキルです。使い方の詳細は `.claude/skills/chat-preview/SKILL.md` を参照してください。
 
 ## セットアップ
 
