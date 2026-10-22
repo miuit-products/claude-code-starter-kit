@@ -15,7 +15,11 @@
 #   3) prompt_id が無いターンでは促さない
 #   4) background_tasks / session_crons が残っているときは促さない
 #
-# このフックはログを書かない。書くのは AI（Fable）で、形式は下記の CTX に従う。
+# このフックはログを書かない。書くのは AI で、形式は下記の CTX に従う。
+#
+# 書き先（2026-10-23〜）: PR を受け入れたときは PR コメント（<!-- harness-intervention --> ＋ ```json 1 行）。
+#   メンバー全員・クラウド worker の受入が PR に集まり、ATS の scripts/harness/weekly-review.sh が REST で集計する。
+#   PR の無い受入（サブエージェントの成果物など）だけローカルの jsonl に追記する。
 
 set -uo pipefail
 
@@ -55,7 +59,7 @@ if ! printf '%s' "$MSG" | grep -qE '\[DONE\].*(受入|検証|確認)しました
 fi
 
 # 既にこのターンで記録済みと述べている
-if printf '%s' "$MSG" | grep -qiE 'interventions\.jsonl|介入ログ(に|へ)(追記|記録)しました'; then
+if printf '%s' "$MSG" | grep -qiE 'interventions\.jsonl|harness-intervention|介入ログ(に|へ)(追記|記録)しました|介入ログ: *(追記|記録|PR)'; then
   exit 0
 fi
 
@@ -71,15 +75,23 @@ REPO="$(basename "${CWD:-unknown}")"
 TS="$(date +%Y-%m-%dT%H:%M:%S%z)"
 
 read -r -d '' CTX <<CBEOF || true
-介入ログ（このターンで 1 回だけ）。worker の成果物を受入したので、次の 1 行を ${LOG_FILE} に追記する（Bash の echo >> で可。既存行は変更しない）。
+介入ログ（このターンで 1 回だけ）。worker の成果物を受入したので、記録を 1 件残す。既存の記録は変更しない。
 
+記録 1 行の形式:
 {"ts":"${TS}","repo":"${REPO}","task":"<短い要約>","worker":"codex|sonnet|claude-cloud|fable","intervened":true|false,"kind":"tenant-guard|test-missing|design-token|spec-gap|layer-violation|flake|security|none|other","fix_layer":"type|ci|rule|prompt|manual|none","notes":"<1行。何を直したか / 直さなかった理由>"}
 
+書き先:
+- 受け入れた成果物に PR がある → その PR にコメントする（チーム全員分がここに集まり、週次レビューが集計する）。
+  本文は「<!-- harness-intervention -->」の行と、上の 1 行を入れた \`\`\`json ブロックだけ。
+  投稿は REST で: gh api repos/<owner>/<repo>/issues/<PR番号>/comments -f body="\$BODY"
+  （クラウドの GitHub プロキシは GraphQL を通さないので gh pr comment は使わない）
+- PR が無い（サブエージェントの成果物など）→ ${LOG_FILE} に追記する（Bash の echo >> で可）。
+
 ルール:
-- intervened は「受入で人（Fable 含む）が直した・差し戻した」なら true。そのまま通したら false で kind:"none", fix_layer:"none"。
+- intervened は「受入で人（または指揮役の AI）が直した・差し戻した」なら true。そのまま通したら false で kind:"none", fix_layer:"none"。
 - kind は介入の原因の種類。fix_layer は「同じ介入を次回なくすなら、どの層で防ぐべきか」（pstack の優先順位: type > ci > rule > prompt > manual）。
-- 秘密値・個人情報・顧客名は書かない。
-- 追記したら本文の最後に「介入ログ: 追記済み（kind=…, fix_layer=…）」と 1 行書く。
+- 秘密値・個人情報・顧客名は書かない（PR コメントはリポの閲覧者全員に見える）。
+- 書いたら本文の最後に「介入ログ: 記録済み（PR #N または local、kind=…, fix_layer=…）」と 1 行書く。
 CBEOF
 
 jq -nc --arg ctx "$CTX" '{hookSpecificOutput:{hookEventName:"Stop",additionalContext:$ctx}}'
