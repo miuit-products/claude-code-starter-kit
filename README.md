@@ -54,6 +54,26 @@ skillshare install miuit-products/claude-code-starter-kit/.claude/skills/chat-pr
 
 chat-preview は、チャットの説明（UI変更・進捗・設計・調査結果）をブラウザの「Chat Preview」ハブに図解ページとして積み上げるスキルです。使い方の詳細は `.claude/skills/chat-preview/SKILL.md` を参照してください。
 
+## 個人設定パック（personal/）
+
+全リポ共通で効く hook とエージェントを `~/.claude/` に入れます。ATS v2 の AI 開発ハーネスで使っているものと同じです。
+
+```bash
+gh repo clone miuit-products/claude-code-starter-kit ~/claude-code-starter-kit
+~/claude-code-starter-kit/personal/install.sh            # --dry-run で変更内容だけ確認できる
+```
+
+| 名前 | 何をするか |
+|---|---|
+| 介入ログ（`hooks/harness/`） | worker の成果物を受け入れたターンで「人が直したか」を1行記録するよう促す。`summarize.sh` で集計 |
+| Company Brain hook（`hooks/company-brain/`） | 会社に関わる質問で回答前の社内ナレッジ参照を促し、再利用できる知見の保存を促す |
+| 司書エージェント（`agents/brain-librarian.md`） | Company Brain を読み取り専用で検索し、要点と出典 slug だけを返す |
+
+- `~/.claude/settings.json` はバックアップしてから追記します。同じ hook が登録済みなら追加しません
+- Company Brain の hook と司書は MCP 接続が前提です。接続が無くても何も壊しません
+- hook のテスト: `cd ~/.claude/hooks/company-brain && ./test.sh`
+- 更新: `git -C ~/claude-code-starter-kit pull && ~/claude-code-starter-kit/personal/install.sh`
+
 ## セットアップ
 
 ### 1. テンプレートからリポジトリを作成
