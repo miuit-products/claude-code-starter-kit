@@ -78,7 +78,7 @@ read -r -d '' CTX <<CBEOF || true
 介入ログ（このターンで 1 回だけ）。worker の成果物を受入したので、記録を 1 件残す。既存の記録は変更しない。
 
 記録 1 行の形式:
-{"ts":"${TS}","repo":"${REPO}","task":"<短い要約>","worker":"codex|sonnet|claude-cloud|fable","intervened":true|false,"kind":"tenant-guard|test-missing|design-token|spec-gap|layer-violation|flake|security|none|other","fix_layer":"type|ci|rule|prompt|manual|none","notes":"<1行。何を直したか / 直さなかった理由>"}
+{"ts":"${TS}","repo":"${REPO}","task":"<短い要約>","worker":"codex|sonnet|claude-cloud|fable","intervened":true|false,"kind":"tenant-guard|security|test-missing|spec-gap|scope|wiring|layer-violation|design-token|observability|flake|none|other","fix_layer":"type|ci|rule|prompt|manual|none","notes":"<1行。何を直したか / 直さなかった理由>"}
 
 書き先:
 - 受け入れた成果物に PR がある → その PR にコメントする（チーム全員分がここに集まり、週次レビューが集計する）。
@@ -89,7 +89,10 @@ read -r -d '' CTX <<CBEOF || true
 
 ルール:
 - intervened は「受入で人（または指揮役の AI）が直した・差し戻した」なら true。そのまま通したら false で kind:"none", fix_layer:"none"。
-- kind は介入の原因の種類。fix_layer は「同じ介入を次回なくすなら、どの層で防ぐべきか」（pstack の優先順位: type > ci > rule > prompt > manual）。
+- kind は **上の語彙から必ず 1 つ選ぶ**（新しい語を作らない。表記もそのまま。ハイフン区切り）。週次レビューは同じ kind の繰り返しを数えるので、語が揺れると検出できなくなる。
+  目安: spec-gap=仕様の読み違い・抜け / scope=依頼範囲の逸脱・広げすぎ / wiring=作ったが配線していない / test-missing=テスト不足 / observability=ログ・監視の欠落 / security=認可・ガード漏れ（テナント越境は tenant-guard）。
+  どれにも当てはまらなければ other にし、notes の先頭に「[候補語: xxx]」と書く（3 回たまったら語彙に足す）。
+- fix_layer は「同じ介入を次回なくすなら、どの層で防ぐべきか」（pstack の優先順位: type > ci > rule > prompt > manual）。
 - 秘密値・個人情報・顧客名は書かない（PR コメントはリポの閲覧者全員に見える）。
 - 書いたら本文の最後に「介入ログ: 記録済み（PR #N または local、kind=…, fix_layer=…）」と 1 行書く。
 CBEOF
